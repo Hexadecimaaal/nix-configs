@@ -1,0 +1,12 @@
+keycode 131 = Multi_key
+keycode 132 = bar yen
+
+keycode  97 = backslash underscore
+
+clear mod3
+remove mod4 = Hyper_L
+remove mod4 = Super_R
+keycode 101 = Super_R
+keycode 102 = Hyper_L
+add mod3 = Hyper_L
+add mod4 = Super_R
