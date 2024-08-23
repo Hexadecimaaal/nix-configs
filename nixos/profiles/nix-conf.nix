@@ -27,7 +27,7 @@
         # max-jobs = 2;
         # cores = 16;
         auto-optimise-store = true;
-        default-flake = "git+file:///home/hex/nix-configs";
+        default-flake = "github:Hexadecimaaal/nix-configs";
         environment = [ "https_proxy" ];
       };
 
