@@ -80,4 +80,14 @@ in
       Group = "hex";
     };
   };
+
+  systemd.services.mc-mkXV = {
+    wantedBy = ["multi-user.target"];
+    serviceConfig = {
+      ExecStart = "${pkgs.jdk17}/bin/java @user_jvm_args.txt @libraries/net/minecraftforge/forge/1.20.1-47.2.20/unix_args.txt nogui";
+      WorkingDirectory = "/Plain/Games/mcservers/mkXV";
+      User = "hex";
+      Group = "hex";
+    };
+  };
 }
