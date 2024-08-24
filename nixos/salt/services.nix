@@ -31,8 +31,8 @@ in
     group = "users";
     openFilesLimit = 1048576;
   };
-  networking.firewall.allowedTCPPorts = [ 80 443 25510 ];
-  networking.firewall.allowedUDPPorts = [ 80 443 25510 ];
+  networking.firewall.allowedTCPPorts = [ 80 443 25510 25515 ];
+  networking.firewall.allowedUDPPorts = [ 80 443 25510 25515 ];
 
   security.acme.acceptTerms = true;
   security.acme.defaults.email = "hexadecimaaal@gmail.com";
