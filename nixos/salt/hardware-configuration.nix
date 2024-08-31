@@ -42,21 +42,45 @@
       neededForBoot = true;
     };
 
-  fileSystems."/Plain" =
+  fileSystems."/Plain/home" =
     {
-      device = "Plain";
+      device = "Plain/home";
       fsType = "zfs";
       options = [ "zfsutil" "X-mount.mkdir" ];
       neededForBoot = true;
     };
 
-  fileSystems."/var/lib/docker" =
+  fileSystems."/Plain/Games" =
     {
-      device = "Plain/docker";
+      device = "Plain/Games";
       fsType = "zfs";
       options = [ "zfsutil" "X-mount.mkdir" ];
       neededForBoot = true;
     };
+
+  fileSystems."/Plain/Videos" =
+    {
+      device = "Plain/Videos";
+      fsType = "zfs";
+      options = [ "zfsutil" "X-mount.mkdir" ];
+      neededForBoot = true;
+    };
+
+  fileSystems."/Plain/Downloads" =
+    {
+      device = "Plain/Downloads";
+      fsType = "zfs";
+      options = [ "zfsutil" "X-mount.mkdir" ];
+      neededForBoot = true;
+    };
+
+  # fileSystems."/var/lib/docker" =
+  #   {
+  #     device = "Plain/docker";
+  #     fsType = "zfs";
+  #     options = [ "zfsutil" "X-mount.mkdir" ];
+  #     neededForBoot = true;
+  #   };
 
   fileSystems."/boot" =
     {
@@ -64,7 +88,7 @@
       fsType = "vfat";
     };
 
-  boot.zfs.requestEncryptionCredentials = [ "salt/HOME" "Plain/Videos" ];
+  boot.zfs.requestEncryptionCredentials = [ "salt/HOME" "Plain" ];
 
   swapDevices = [{
     device = "/dev/disk/by-partuuid/435106f8-d93b-4219-beaa-00087c655c29";
