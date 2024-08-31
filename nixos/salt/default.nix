@@ -130,9 +130,10 @@
     in
     {
       "Plain/backups" = template_backups;
-      "Plain" = template_local;
+      "Plain/home" = template_local;
       "Plain/Videos" = template_local;
       "Plain/Downloads" = template_shortlived;
+      "Plain/Games" = template_shortlived;
       # "salt" = template_shortlived;
       "salt/ROOT" = template_shortlived;
       "salt/HOME" = template_shortlived;
