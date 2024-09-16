@@ -18,61 +18,83 @@
   # boot.kernelParams = [ "zfs.zfs_dmu_offset_next_sync=0" ];
   #boot.kernelParams = [ "resume=UUID=e117d62d-6440-4b27-bbb5-1db1458d1e00" ];
 
-  fileSystems."/" =
+  fileSystems =
+    let
+      zfs = (dev: {
+        device = dev;
+        fsType = "zfs";
+        options = [ "zfsutil" "X-mount.mkdir" ];
+        neededForBoot = true;
+      });
+    in
     {
-      device = "salt/ROOT";
-      fsType = "zfs";
-      options = [ "zfsutil" "X-mount.mkdir" ];
-      neededForBoot = true;
+      "/boot" = {
+        device = "/dev/disk/by-uuid/DD6D-CCA8";
+        fsType = "vfat";
+      };
+      "/" = zfs "Plain/salt/ROOT";
+      "/nix" = zfs "Plain/salt/NIX";
+      "/home" = zfs "Plain/home";
+      "/Plain/Games" = zfs "Plain/Games";
+      "/Plain/Downloads" = zfs "Plain/Downloads";
+      "/Plain/Videos" = zfs "Plain/Videos";
     };
 
-  fileSystems."/home" =
-    {
-      device = "salt/HOME";
-      fsType = "zfs";
-      options = [ "zfsutil" "X-mount.mkdir" ];
-      neededForBoot = true;
-    };
+  # fileSystems."/" =
+  #   {
+  #     device = "Plain/salt/ROOT";
+  #     fsType = "zfs";
+  #     options = [ "zfsutil" "X-mount.mkdir" ];
+  #     neededForBoot = true;
+  #   };
 
-  fileSystems."/nix" =
-    {
-      device = "salt/NIX";
-      fsType = "zfs";
-      options = [ "zfsutil" "X-mount.mkdir" ];
-      neededForBoot = true;
-    };
+  # fileSystems."/home" =
+  #   {
+  #     device = "Plain/home";
+  #     fsType = "zfs";
+  #     options = [ "zfsutil" "X-mount.mkdir" ];
+  #     neededForBoot = true;
+  #   };
 
-  fileSystems."/Plain/home" =
-    {
-      device = "Plain/home";
-      fsType = "zfs";
-      options = [ "zfsutil" "X-mount.mkdir" ];
-      neededForBoot = true;
-    };
+  # fileSystems."/nix" =
+  #   {
+  #     device = "Plain/salt/NIX";
+  #     fsType = "zfs";
+  #     options = [ "zfsutil" "X-mount.mkdir" ];
+  #     neededForBoot = true;
+  #   };
 
-  fileSystems."/Plain/Games" =
-    {
-      device = "Plain/Games";
-      fsType = "zfs";
-      options = [ "zfsutil" "X-mount.mkdir" ];
-      neededForBoot = true;
-    };
+  # fileSystems."/Plain/home" =
+  #   {
+  #     device = "Plain/home";
+  #     fsType = "zfs";
+  #     options = [ "zfsutil" "X-mount.mkdir" ];
+  #     neededForBoot = true;
+  #   };
 
-  fileSystems."/Plain/Videos" =
-    {
-      device = "Plain/Videos";
-      fsType = "zfs";
-      options = [ "zfsutil" "X-mount.mkdir" ];
-      neededForBoot = true;
-    };
+  # fileSystems."/Plain/Games" =
+  #   {
+  #     device = "Plain/Games";
+  #     fsType = "zfs";
+  #     options = [ "zfsutil" "X-mount.mkdir" ];
+  #     neededForBoot = true;
+  #   };
 
-  fileSystems."/Plain/Downloads" =
-    {
-      device = "Plain/Downloads";
-      fsType = "zfs";
-      options = [ "zfsutil" "X-mount.mkdir" ];
-      neededForBoot = true;
-    };
+  # fileSystems."/Plain/Videos" =
+  #   {
+  #     device = "Plain/Videos";
+  #     fsType = "zfs";
+  #     options = [ "zfsutil" "X-mount.mkdir" ];
+  #     neededForBoot = true;
+  #   };
+
+  # fileSystems."/Plain/Downloads" =
+  #   {
+  #     device = "Plain/Downloads";
+  #     fsType = "zfs";
+  #     options = [ "zfsutil" "X-mount.mkdir" ];
+  #     neededForBoot = true;
+  #   };
 
   # fileSystems."/var/lib/docker" =
   #   {
@@ -82,13 +104,7 @@
   #     neededForBoot = true;
   #   };
 
-  fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-uuid/DD6D-CCA8";
-      fsType = "vfat";
-    };
-
-  boot.zfs.requestEncryptionCredentials = [ "salt/HOME" "Plain" ];
+  boot.zfs.requestEncryptionCredentials = [ "Plain" ];
 
   # swapDevices = [{
   #   device = "/dev/disk/by-partuuid/435106f8-d93b-4219-beaa-00087c655c29";
