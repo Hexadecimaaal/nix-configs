@@ -4,7 +4,7 @@
 
 { config, pkgs, lib, suites, ... }: {
   imports = [
-    ./hardware-configuration.nix
+    ./fs.nix
     ./networking.nix
     ./users.nix
     ./plain-share.nix
@@ -28,8 +28,6 @@
   sops.defaultSopsFile = ./secrets.yaml;
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 
-  boot.tmp.useTmpfs = true;
-
   boot.kernel.sysctl."vm.swappiness" = 150;
   systemd.services.zswap = {
     description = "Enable ZSwap";
@@ -50,6 +48,8 @@
 
   boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
   boot.initrd.systemd.enable = true;
+  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "mpt3sas" ];
+  boot.kernelModules = [ "kvm-amd" "mlx4_core" "mlx4_en" "mlx4_ib" "vfio-pci" "tcp_bbr" ];
 
   hardware.enableRedistributableFirmware = true;
 
@@ -62,11 +62,6 @@
   #     };
   #   }
   # ];
-
-  boot.kernelModules = [
-    "tcp_bbr"
-    "kvm-amd"
-  ];
 
   powerManagement.cpuFreqGovernor = "schedutil";
 
@@ -91,79 +86,6 @@
   security.sudo.execWheelOnly = true;
   security.sudo.wheelNeedsPassword = false;
 
-  boot.supportedFilesystems = [ "zfs" "ntfs" "f2fs" ];
-
-  boot.zfs.devNodes = "/dev/disk/by-id";
-
-  # services.zfs.autoSnapshot.enable = true;
-  services.sanoid.enable = true;
-  services.sanoid.interval = "*:0/15";
-  services.sanoid.datasets =
-    let
-      template_backups = {
-        daily = 7;
-        weekly = 4;
-        monthly = 12;
-        yearly = 10;
-        autoprune = true;
-        autosnap = false;
-        recursive = true;
-      };
-      template_local = {
-        frequently = 12;
-        hourly = 24;
-        daily = 7;
-        weekly = 4;
-        monthly = 12;
-        yearly = 10;
-        autosnap = true;
-        autoprune = true;
-      };
-      template_shortlived = {
-        frequently = 12;
-        hourly = 24;
-        daily = 7;
-        weekly = 4;
-        autosnap = true;
-        autoprune = true;
-      };
-    in
-    {
-      "Plain/backups" = template_backups;
-      "Plain/home" = template_local;
-      "Plain/Videos" = template_local;
-      "Plain/Downloads" = template_shortlived;
-      "Plain/Games" = template_shortlived;
-      # "salt" = template_shortlived;
-      # "salt/ROOT" = template_shortlived;
-      # "salt/HOME" = template_shortlived;
-    };
-
-  services.syncoid.enable = true;
-  services.syncoid.localSourceAllow = [
-    "bookmark"
-    "hold"
-    "send"
-    "snapshot"
-    "mount"
-    "destroy"
-  ];
-  services.syncoid.localTargetAllow = [
-    "change-key"
-    "compression"
-    "create"
-    "mount"
-    "mountpoint"
-    "receive"
-    "rollback"
-    "destroy"
-  ];
-  # services.syncoid.commands = {
-  #   "salt".target = "Plain/backups/salt";
-  #   "salt".sendOptions = "w";
-  #   "salt".recursive = true;
-  # };
-
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -179,52 +101,7 @@
   #   _JAVA_OPTIONS = "-Dsun.java2d.uiScale=2.0";
   # };
 
-  # services.xserver.displayManager.gdm.wayland = false;
-  # services.xserver.displayManager.gdm.enable = true;
-  # services.xserver.displayManager.sddm.enable = true;
-  # services.xserver.desktopManager.plasma6.enable = true;
-  # services.xserver.desktopManager.gnome.enable = true;
-  # hardware.pulseaudio.enable = false;
-  # programs.ssh.askPassword = lib.mkForce "${pkgs.gnome.seahorse}";
-
-  # this is needed so that gtk can find emacs key theme
-  # environment.extraInit = ''
-  #   # argh
-  #   mkdir ~/.themes/ 2>/dev/null
-  #   ln -sf "${pkgs.gtk2}/share/themes/Emacs" ~/.themes/
-
-  #   export XDG_DATA_DIRS="${pkgs.gtk3}/share:$XDG_DATA_DIRS"
-  # '';
-
-  # services.udev.extraRules = ''
-
-  #   ACTION=="add", SUBSYSTEMS=="usb", \
-  #   ENV{ID_SERIAL}=="ZSA_Technology_Labs_ErgoDox_EZ", \
-  #   RUN+="${pkgs.runtimeShell} -c 'echo disabled > /sys$env{DEVPATH}/power/wakeup'"
-
-  #   # Raspberry Pi Picoprobe
-  #   ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="0004", MODE:="0666"
-
-  # '';
-
-  # Configure keymap in X11
-  # services.xserver.layout = "us";
-  # services.xserver.xkbOptions = "eurosign:e";
-
-  # Enable CUPS to print documents.
-  services.avahi.enable = true;
-  services.avahi.nssmdns4 = true;
-  services.printing.enable = true;
-  # services.printing.drivers = with pkgs; [ hplipWithPlugin ];
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-
   services.upower.enable = true;
-
-  # services.emacs.enable = true;
-  # virtualisation.podman.enable = true;
-  # virtualisation.podman.dockerCompat = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget

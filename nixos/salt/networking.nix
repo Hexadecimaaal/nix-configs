@@ -3,7 +3,7 @@
     # ../profiles/cgproxy.nix
     # ../profiles/v2ray.nix
   ];
-  networking.hostId = "249ab6f0";
+
   networking.hostName = "salt";
 
   networking.useDHCP = false;
