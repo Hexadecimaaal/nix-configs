@@ -135,8 +135,8 @@
       "Plain/Downloads" = template_shortlived;
       "Plain/Games" = template_shortlived;
       # "salt" = template_shortlived;
-      "salt/ROOT" = template_shortlived;
-      "salt/HOME" = template_shortlived;
+      # "salt/ROOT" = template_shortlived;
+      # "salt/HOME" = template_shortlived;
     };
 
   services.syncoid.enable = true;
@@ -158,11 +158,11 @@
     "rollback"
     "destroy"
   ];
-  services.syncoid.commands = {
-    "salt".target = "Plain/backups/salt";
-    "salt".sendOptions = "w";
-    "salt".recursive = true;
-  };
+  # services.syncoid.commands = {
+  #   "salt".target = "Plain/backups/salt";
+  #   "salt".sendOptions = "w";
+  #   "salt".recursive = true;
+  # };
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
