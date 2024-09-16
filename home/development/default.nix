@@ -12,6 +12,6 @@
   programs.java.package = pkgs.jdk8;
   home.packages = with pkgs; [
     (lib.hiPrio j)
-    (dyalog.override { acceptLicense = true; })
+    # (dyalog.override { acceptLicense = true; })
   ];
 }

@@ -15,7 +15,7 @@
     # jetbrains.mps
     # wolfram-engine
     mathematica
-    ride
+    # ride
     wireshark
 
     (python3.withPackages (p: with p; [
