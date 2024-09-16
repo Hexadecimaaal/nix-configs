@@ -56,10 +56,10 @@
       };
     };
 
-  swapDevices = [{
-    device = "/dev/disk/by-partuuid/444d443c-1172-4991-82b9-b1007bb22e91";
-    randomEncryption = {
-      enable = true;
-    };
-  }];
+  # swapDevices = [{
+  #   device = "/dev/disk/by-partuuid/444d443c-1172-4991-82b9-b1007bb22e91";
+  #   randomEncryption = {
+  #     enable = true;
+  #   };
+  # }];
 }

@@ -90,12 +90,12 @@
 
   boot.zfs.requestEncryptionCredentials = [ "salt/HOME" "Plain" ];
 
-  swapDevices = [{
-    device = "/dev/disk/by-partuuid/435106f8-d93b-4219-beaa-00087c655c29";
-    randomEncryption = {
-      enable = true;
-    };
-  }];
+  # swapDevices = [{
+  #   device = "/dev/disk/by-partuuid/435106f8-d93b-4219-beaa-00087c655c29";
+  #   randomEncryption = {
+  #     enable = true;
+  #   };
+  # }];
 
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   # high-resolution display
