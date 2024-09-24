@@ -2,6 +2,9 @@
   imports = [
     ./coq.nix
     ./agda.nix
+    ./python.nix
+    ./rust.nix
+    ./c.nix
   ];
   # nixpkgs.config = {
   #   allowUnfree = true;
