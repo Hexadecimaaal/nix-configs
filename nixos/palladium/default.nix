@@ -18,7 +18,7 @@
     # ../profiles/v2ray.nix
   ];
 
-  boot.kernelPackages = lib.mkDefault config.boot.zfs.package.latestCompatibleLinuxPackages;
+  boot.kernelPackages = pkgs.linuxPackages_6_10;
   boot.initrd.systemd.enable = true;
 
   programs.mtr.enable = true;

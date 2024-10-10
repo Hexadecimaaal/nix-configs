@@ -46,7 +46,7 @@
 
   # nixpkgs.config.allowUnfree = true;
 
-  boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
+  boot.kernelPackages = pkgs.linuxPackages_6_10;
   boot.initrd.systemd.enable = true;
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "mpt3sas" ];
   boot.kernelModules = [ "kvm-amd" "mlx4_core" "mlx4_en" "mlx4_ib" "vfio-pci" "tcp_bbr" ];
