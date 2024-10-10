@@ -13,7 +13,7 @@
   ];
 
   inputs = {
-    nixos.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixos.url = "github:Hexadecimaaal/nixpkgs/mathematica-fix";
     #nixos.url = "git+file:///home/hex/Documents/nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
 
