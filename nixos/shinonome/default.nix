@@ -6,6 +6,15 @@
     ./fs.nix
   ];
 
+  documentation = {
+    enable = false;
+    man.enable = false;
+    info.enable = lib.mkDefault false;
+  };
+
+  system.disableInstallerTools = lib.mkDefault true;
+  boot.enableContainers = lib.mkDefault false;
+
   sops.defaultSopsFile = ./secrets.yaml;
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   sops.secrets.hashed_pw.neededForUsers = true;
