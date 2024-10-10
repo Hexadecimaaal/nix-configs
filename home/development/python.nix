@@ -12,7 +12,7 @@
       notebook
       jupyter-client
       pyzmq
-      vmprof
+      # vmprof
     ]))
   ];
 }
