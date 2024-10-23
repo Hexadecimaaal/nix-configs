@@ -13,7 +13,7 @@
     # ../profiles/numa.nix
     # ../profiles/i3
     ../profiles/nix-conf.nix
-    ../profiles/k3b.nix
+    # ../profiles/k3b.nix
     ../profiles/libvirtd.nix
     ../profiles/auth.nix
     ../profiles/pipewire.nix

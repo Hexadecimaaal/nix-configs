@@ -7,7 +7,7 @@
     ../profiles/hardware
     ../profiles/auth.nix
     ../profiles/fontconfig.nix
-    ../profiles/k3b.nix
+    # ../profiles/k3b.nix
     ../profiles/libvirtd.nix
     ../profiles/nix-conf.nix
     ../profiles/pipewire.nix

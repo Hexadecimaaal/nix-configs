@@ -5,7 +5,7 @@
     gyre-fonts
     unifont
     noto-fonts
-    noto-fonts-cjk
+    noto-fonts-cjk-sans
     noto-fonts-emoji
     source-han-serif
     # liberation_ttf

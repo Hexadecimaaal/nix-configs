@@ -4,6 +4,8 @@
     ardour calf # cadence
     yabridge yabridgectl
     bitwig-studio
-    surge surge-XT cardinal fire tunefish lsp-plugins
+    surge surge-XT cardinal fire
+    # tunefish
+    lsp-plugins
   ];
 }
