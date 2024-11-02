@@ -6,6 +6,8 @@
 {
   # system.extraDependencies = collectFlakeInputs inputs.self;
   nix = {
+    channel.enable = false;
+
     gc = {
       automatic = true;
       options = "--delete-older-than 30d";
@@ -32,6 +34,12 @@
       };
 
     nixPath = [ "nixpkgs=/home/hex/nix-configs" ];
+  };
+
+  systemd.services.nix-gc.serviceConfig = {
+    Nice = 19;
+    IOSchedulingClass = "idle";
+    MemorySwapMax = 0;
   };
 
   # nixpkgs.config = {

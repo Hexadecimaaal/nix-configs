@@ -18,7 +18,7 @@
     # ../profiles/v2ray.nix
   ];
 
-  boot.kernelPackages = pkgs.linuxPackages_6_10;
+  boot.kernelPackages = pkgs.linuxPackages_6_6;
   boot.initrd.systemd.enable = true;
 
   programs.mtr.enable = true;
