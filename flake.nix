@@ -13,7 +13,8 @@
   ];
 
   inputs = {
-    nixos.url = "github:Hexadecimaaal/nixpkgs/nixos-unstable";
+    nixos.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # nixos.url = "github:Hexadecimaaal/nixpkgs/nixos-unstable";
     #nixos.url = "git+file:///home/hex/Documents/nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
 

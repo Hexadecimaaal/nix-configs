@@ -129,7 +129,7 @@
   hardware.enableRedistributableFirmware = true;
   hardware.cpu.intel.updateMicrocode = true;
 
-  services.zerotierone.enable = true;
+  # services.zerotierone.enable = true;
 
   # services.postgresql.enable = true;
 
