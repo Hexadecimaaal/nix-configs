@@ -150,7 +150,7 @@
         ] "x86_64-linux";
         nixosConfigurations.shinonome = mkNixos [
           ./nixos/shinonome
-          (mkHomeModule "hex" "/home/hex" [ vscode-server.homeModules.default ./home ])
+          # (mkHomeModule "hex" "/home/hex" [ vscode-server.homeModules.default ./home ])
         ] "x86_64-linux";
 
         darwinConfigurations.iron = darwin.lib.darwinSystem {

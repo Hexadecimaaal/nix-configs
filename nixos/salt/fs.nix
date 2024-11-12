@@ -29,6 +29,10 @@
       "/Plain/Games" = zfs "Plain/Games";
       "/Plain/Downloads" = zfs "Plain/Downloads";
       "/Plain/Videos" = zfs "Plain/Videos";
+      "/Plain/home" = {
+        device = "/home";
+        options = [ "bind" ];
+      };
     };
 
 
