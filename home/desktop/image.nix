@@ -1,8 +1,8 @@
 { pkgs, ... }: {
   home.packages = with pkgs; [
-    blender
+    # blender
     # gimp-with-plugins
-    gimp
-    inkscape
+    # gimp
+    # inkscape
   ];
 }
