@@ -94,10 +94,11 @@
         nixReg = {
           nix.registry = nixos.lib.mapAttrs (key: value: { from = { id = key; type = "indirect"; }; flake = value; }) inputs;
         };
-        mkNixos = mods: system: nixos.lib.nixosSystem {
+        mkNixos = { mods, system, stateVersion }: nixos.lib.nixosSystem {
           system = system;
           modules = mods ++ [
             { nixpkgs.pkgs = self.legacyPackages.${system}; }
+            { system.stateVersion = stateVersion; }
             genRev
             nixReg
             inputs.home.nixosModules.home-manager
@@ -105,12 +106,12 @@
           ];
           specialArgs = { inherit inputs; };
         };
-        mkHomeModule = user: dir: imports: {
+        mkHomeModule = { user, dir, imports, stateVersion }: {
           home-manager.users.${user} = { config, inputs, ... }: {
             inherit imports;
             home.username = user;
             home.homeDirectory = dir;
-            home.stateVersion = "22.05";
+            home.stateVersion = stateVersion;
           };
           home-manager.extraSpecialArgs = { inherit inputs; };
           home-manager.useGlobalPkgs = true;
@@ -136,22 +137,54 @@
             };
         };
 
-        nixosConfigurations.salt = mkNixos [
-          ./nixos/salt
-          (mkHomeModule "hex" "/home/hex" [ vscode-server.homeModules.default ./home ./home/desktop ])
-        ] "x86_64-linux";
-        nixosConfigurations.mercury = mkNixos [
-          ./nixos/mercury
-          (mkHomeModule "hex" "/home/hex" [ vscode-server.homeModules.default ./home ./home/desktop ])
-        ] "x86_64-linux";
-        nixosConfigurations.palladium = mkNixos [
-          ./nixos/palladium
-          (mkHomeModule "hex" "/home/hex" [ vscode-server.homeModules.default ./home ./home/desktop ])
-        ] "x86_64-linux";
-        nixosConfigurations.shinonome = mkNixos [
-          ./nixos/shinonome
-          # (mkHomeModule "hex" "/home/hex" [ vscode-server.homeModules.default ./home ])
-        ] "x86_64-linux";
+        nixosConfigurations.salt = let stateVersion = "22.11"; in mkNixos {
+          mods = [
+            ./nixos/salt
+            (mkHomeModule {
+              user = "hex";
+              dir = "/home/hex";
+              imports = [ vscode-server.homeModules.default ./home ./home/desktop ];
+              inherit stateVersion;
+            })
+          ];
+          system = "x86_64-linux";
+          inherit stateVersion;
+        };
+        nixosConfigurations.mercury = let stateVersion = "23.11"; in mkNixos {
+          mods = [
+            ./nixos/mercury
+            (mkHomeModule {
+              user = "hex";
+              dir = "/home/hex";
+              imports = [ vscode-server.homeModules.default ./home ./home/desktop ];
+              inherit stateVersion;
+            })
+          ];
+          system = "x86_64-linux";
+          inherit stateVersion;
+        };
+        nixosConfigurations.palladium = let stateVersion = "23.11"; in
+          mkNixos {
+            mods = [
+              ./nixos/palladium
+              (mkHomeModule {
+                user = "hex";
+                dir = "/home/hex";
+                imports = [ vscode-server.homeModules.default ./home ./home/desktop ];
+                inherit stateVersion;
+              })
+            ];
+            system = "x86_64-linux";
+            inherit stateVersion;
+          };
+        nixosConfigurations.shinonome = let stateVersion = "24.11"; in
+          mkNixos {
+            mods = [
+              ./nixos/shinonome
+            ];
+            system = "x86_64-linux";
+            inherit stateVersion;
+          };
 
         darwinConfigurations.iron = darwin.lib.darwinSystem {
           system = "x86_64-darwin";
