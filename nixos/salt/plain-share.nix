@@ -1,7 +1,7 @@
 {
   services.samba = {
     enable = true;
-    enableNmbd = false;
+    nmbd.enable = false;
     openFirewall = true;
     settings = {
       global = {

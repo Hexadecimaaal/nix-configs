@@ -9,8 +9,8 @@
   networking.useDHCP = false;
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 64331 ];
-  networking.firewall.allowedUDPPorts = [ 64331 ];
+  networking.firewall.allowedTCPPorts = [ 64331 27036 27037 ];
+  networking.firewall.allowedUDPPorts = [ 64331 27031 27036 ];
   # Or disable the firewall altogether.
   networking.firewall.enable = true;
   networking.nftables.enable = true;
