@@ -86,8 +86,8 @@
   networking.firewall.enable = true;
   networking.nftables.enable = true;
   networking.firewall.logRefusedConnections = lib.mkDefault false;
-  networking.firewall.allowedTCPPorts = [ 53 80 443 4950 8080 ];
-  networking.firewall.allowedUDPPorts = [ 53 80 443 4950 8080 ];
+  networking.firewall.allowedTCPPorts = [ 53 80 443 4950 8080 9993 ];
+  networking.firewall.allowedUDPPorts = [ 53 80 443 4950 8080 9993 ];
 
   users.users."v2ray" = {
     isSystemUser = true;
