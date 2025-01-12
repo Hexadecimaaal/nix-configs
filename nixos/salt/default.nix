@@ -23,6 +23,7 @@
     ../profiles/i18n.nix
     ../profiles/console.nix
     ../profiles/kde.nix
+    ../profiles/steam.nix
   ];
 
   sops.defaultSopsFile = ./secrets.yaml;
@@ -131,7 +132,6 @@
   users.defaultUserShell = pkgs.zsh;
 
   # programs.kdeconnect.enable = true;
-  programs.steam.enable = true;
 
   # nixpkgs.config.firefox.enablePlasmaBrowserIntegration = true;
 
