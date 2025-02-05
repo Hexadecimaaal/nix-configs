@@ -105,8 +105,9 @@
     podman-compose
   ];
 
-  virtualisation.podman.enable = true;
-  virtualisation.podman.dockerCompat = true;
+  # virtualisation.podman.enable = true;
+  # virtualisation.podman.dockerCompat = true;
+  virtualisation.docker.enable = true;
 
   virtualisation.waydroid.enable = true;
 
