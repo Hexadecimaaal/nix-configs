@@ -61,7 +61,7 @@
 
   networking.networkmanager.enable = true;
   powerManagement.enable = true;
-  hardware.pulseaudio.enable = lib.mkForce false;
+  # hardware.pulseaudio.enable = lib.mkForce false;
   services.spice-vdagentd.enable = true;
   services.qemuGuest.enable = true;
   virtualisation.vmware.guest.enable = pkgs.stdenv.hostPlatform.isx86;

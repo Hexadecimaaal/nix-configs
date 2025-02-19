@@ -79,7 +79,7 @@
             # nix-dram.overlay
           ];
         };
-        packages.home-manager = home.defaultPackage.${system};
+        # packages.home-manager = home.defaultPackage.${system};
       }) //
     (
       let
