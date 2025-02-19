@@ -75,7 +75,7 @@
           config.allowUnfree = true;
           config.oraclejdk.accept_license = true;
           overlays = builtins.attrValues self.overlays ++ [
-            nur.overlay
+            nur.overlays.default
             # nix-dram.overlay
           ];
         };
@@ -193,7 +193,7 @@
             {
               nixpkgs.system = "x86_64-darwin";
               nixpkgs.overlays = builtins.attrValues self.overlays ++ [
-                nur.overlay
+                nur.overlays.default
                 nix-dram.overlay
                 # emacs-darwin.overlay
               ];

@@ -9,7 +9,7 @@
     ./users.nix
     ./plain-share.nix
     ./services.nix
-    ./gitlab-runner.nix
+    # ./gitlab-runner.nix
     # ../profiles/numa.nix
     # ../profiles/i3
     ../profiles/nix-conf.nix

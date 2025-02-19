@@ -17,7 +17,7 @@
       use-package
 
       yaml-mode
-      lean-mode
+      # lean-mode
       racket-mode
       nix-haskell-mode
       json-mode
@@ -32,19 +32,19 @@
       ample-theme
     ];
 
-    overrides = self: super: {
-      inherit (self.melpaStablePackages) use-package;
-      ligature = super.trivialBuild {
-        pname = "ligature";
-        version = "not really";
-        src = pkgs.fetchFromGitHub {
-          owner = "mickeynp";
-          repo = "ligature.el";
-          rev = "9357156a917a021a87b33ee391567a5d8e44794a";
-          sha256 = "sha256-Bgb5wFyx0hMilpihxA8cTrRVw71EBOw2DczlM4lSNMs=";
-        };
-      };
-    };
+    # overrides = self: super: {
+    #   inherit (self.melpaStablePackages) use-package;
+    #   ligature = super.trivialBuild {
+    #     pname = "ligature";
+    #     version = "not really";
+    #     src = pkgs.fetchFromGitHub {
+    #       owner = "mickeynp";
+    #       repo = "ligature.el";
+    #       rev = "9357156a917a021a87b33ee391567a5d8e44794a";
+    #       sha256 = "sha256-Bgb5wFyx0hMilpihxA8cTrRVw71EBOw2DczlM4lSNMs=";
+    #     };
+    #   };
+    # };
   };
 
   home.file.".emacs.d" = {
