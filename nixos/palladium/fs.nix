@@ -56,6 +56,12 @@
         device = "/dev/disk/by-uuid/C8D8-CBA8";
         fsType = "vfat";
       };
+      "/mlem" = {
+        device = "mlem";
+        fsType = "zfs";
+        options = [ "zfsutil" "X-mount.mkdir" ];
+        neededForBoot = false;
+      };
     };
 
   swapDevices = [{
