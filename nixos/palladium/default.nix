@@ -2,7 +2,7 @@
   imports = [
     ./fs.nix
     ./powersave.nix
-    # ./i915-sriov.nix
+    ./xe.nix
 
     ../profiles/hardware
     ../profiles/auth.nix
@@ -19,7 +19,7 @@
     ../profiles/steam.nix
   ];
 
-  boot.kernelPackages = pkgs.linuxPackages_6_6;
+  boot.kernelPackages = pkgs.linuxPackages_6_12;
   boot.initrd.systemd.enable = true;
 
   programs.mtr.enable = true;

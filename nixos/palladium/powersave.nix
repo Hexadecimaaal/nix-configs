@@ -12,7 +12,7 @@
     CPU_ENERGY_PREF_POLICY_ON_BAT = "power";
     PLATFORM_PROFILE_ON_AC = "performance";
     PLATFORM_PROFILE_ON_BAT = "low-power";
-    DISK_DEVICES = "nvme0n1 nvme1n1";
+    DISK_DEVICES = "nvme0n1 sda";
     # CPU_MAX_PERF_ON_BAT = 10;
   };
 
