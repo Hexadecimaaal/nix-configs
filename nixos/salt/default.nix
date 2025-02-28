@@ -74,6 +74,9 @@
     "kvm.ignore_msrs=1"
     "kvm.report_ignored_msrs=0"
     "vfio_iommu_type1.allow_unsafe_interrupts=1"
+    "nvme_core.default_ps_max_latency_us=0"
+    "pcie_aspm=off"
+    "pcie_port_pm=off"
   ];
 
   systemd.targets = {
