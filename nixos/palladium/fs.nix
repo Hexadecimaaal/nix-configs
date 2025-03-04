@@ -8,7 +8,7 @@
 
   networking.hostId = "4cf3a8e1";
   boot.zfs.devNodes = "/dev/disk/by-id";
-  boot.zfs.requestEncryptionCredentials = [ "palladium" ];
+  boot.zfs.requestEncryptionCredentials = [ "palladium/palladium" ];
 
   boot.tmp.useTmpfs = true;
 
@@ -27,14 +27,13 @@
         hourly = 24;
         daily = 7;
         weekly = 4;
-        monthly = 3;
         autosnap = true;
         autoprune = true;
       };
     in
     {
-      "palladium" = template;
-      "palladium/home" = template;
+      "palladium/palladium" = template;
+      "palladium/palladium/home" = template;
     };
 
   # boot.kernelParams = [ "zfs.zfs_dmu_offset_next_sync=0" ];
@@ -49,9 +48,9 @@
       });
     in
     {
-      "/" = zfs "palladium";
-      "/nix" = zfs "palladium/nix";
-      "/home" = zfs "palladium/home";
+      "/" = zfs "palladium/palladium";
+      "/nix" = zfs "palladium/palladium/nix";
+      "/home" = zfs "palladium/palladium/home";
       "/boot" = {
         device = "/dev/disk/by-uuid/C8D8-CBA8";
         fsType = "vfat";
