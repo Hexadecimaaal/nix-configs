@@ -4,6 +4,8 @@
     "${modulesPath}/profiles/all-hardware.nix"
     "${modulesPath}/profiles/graphical.nix"
     ./fs.nix
+    ../profiles/clitools.nix
+    ../profiles/guitools.nix
     ../profiles/nix-conf.nix
     ../profiles/auth.nix
     ../profiles/fontconfig.nix
@@ -122,22 +124,6 @@
   };
 
   services.upower.enable = true;
-
-  environment.systemPackages = with pkgs; [
-    appmenu-gtk3-module
-    nfs-utils
-    wget
-    vim
-    emacs
-    git
-    ark
-    unar
-    xz
-    filelight
-    firefox
-    wineWowPackages.staging
-    home-manager
-  ];
 
   hardware.bluetooth.enable = true;
   systemd.services."bluetooth".serviceConfig.ExecStart =

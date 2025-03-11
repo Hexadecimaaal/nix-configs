@@ -3,6 +3,7 @@
     (modulesPath + "/profiles/qemu-guest.nix")
     ../profiles/console.nix
     ../profiles/nix-conf.nix
+    ../profiles/clitools.nix
     ./fs.nix
   ];
 

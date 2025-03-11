@@ -10,6 +10,8 @@
     ./plain-share.nix
     ./services.nix
     # ./gitlab-runner.nix
+    ../profiles/clitools.nix
+    ../profiles/guitools.nix
     # ../profiles/numa.nix
     # ../profiles/i3
     ../profiles/nix-conf.nix
@@ -110,23 +112,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    # gnome.gnome-tweaks
-    # gnomeExtensions.material-shell
-    nfs-utils
-    wget
-    vim
-    emacs
-    git
-    pciutils
-    # ark
-    unar
-    xz
-    firefox
-    wineWowPackages.staging
-    # xorg.xmodmap
-    sanoid
-    mbuffer
-    lzop
+
   ];
 
   # programs.dconf.enable = true;

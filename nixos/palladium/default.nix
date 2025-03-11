@@ -4,6 +4,8 @@
     ./powersave.nix
     ./xe.nix
 
+    ../profiles/clitools.nix
+    ../profiles/guitools.nix
     ../profiles/hardware
     ../profiles/auth.nix
     ../profiles/fontconfig.nix
@@ -90,20 +92,6 @@
     '';
   };
 
-  environment.systemPackages = with pkgs; [
-    nfs-utils
-    wget
-    vim
-    emacs
-    git
-    unar
-    p7zip
-    xz
-    firefox
-    wineWowPackages.staging
-    home-manager
-    podman-compose
-  ];
 
   # virtualisation.podman.enable = true;
   # virtualisation.podman.dockerCompat = true;
