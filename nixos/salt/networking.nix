@@ -106,7 +106,7 @@
 
   systemd.services."ivacy-vpn" = {
 
-    wantedBy = [ "multi-user.target" ];
+    # wantedBy = [ "multi-user.target" ];
     after = [ "network.target" "netns-vpn.service" ];
     bindsTo = [ "netns-vpn.service" ];
     partOf = [ "netns-vpn.service" ];
@@ -119,6 +119,89 @@
       ExecStopPost = "@${pkgs.iproute2}/bin/ip ip route add default via 10.0.1.0";
       Type = "notify";
       NetworkNamespacePath = "/run/netns/vpn";
+      Conflicts = [ "pia-vpn.service" ];
     };
+  };
+
+  sops.secrets.pia_env = { };
+  systemd.services."pia-vpn" = {
+
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" "netns-vpn.service" ];
+    bindsTo = [ "netns-vpn.service" ];
+    partOf = [ "netns-vpn.service" ];
+
+    path = with pkgs; [ jq wireguard-tools curl iproute2 ];
+    serviceConfig =
+      let
+        wg-quick = "${pkgs.wireguard-tools}/bin/wg-quick";
+      in
+      {
+        ExecStart = pkgs.writeShellScript "start-pia.sh" ''
+          gentokenResp=$(curl -s -u "$PIA_USER:$PIA_PASS" https://privateinternetaccess.com/gtoken/generateToken)
+          if [[ -z "$gentokenResp" ]]; then
+            echo "Failed to generate token"
+            exit 1
+          fi
+          if [[ $(echo $gentokenResp | jq -r '.status') != "OK" ]]; then
+            echo "Failed to generate token: $(echo $gentokenResp | jq -r '.message')"
+            exit 1
+          fi
+          token=$(echo $gentokenResp | jq -r '.token')
+          privkey=$(wg genkey)
+          pubkey=$(echo $privkey | wg pubkey)
+          wireguard_json=$(curl -s -G \
+            --connect-to "$PIA_HOST::$PIA_SERVER:" \
+            --cacert "ca.rsa.4096.crt" \
+            --data-urlencode "pubkey=$pubkey" \
+            --data-urlencode "pt=$token" \
+            "https://$PIA_HOST:1337/addKey" )
+          ${wg-quick} down pia
+          mkdir -p /etc/wireguard
+          echo "
+          [Interface]
+          PrivateKey = $privkey
+          Address = $(echo $wireguard_json | jq -r '.peer_ip')
+          [Peer]
+          PublicKey = $(echo $wireguard_json | jq -r '.server_key')
+          Endpoint = $PIA_SERVER:$(echo $wireguard_json | jq -r '.server_port')
+          AllowedIPs = 0.0.0.0/0
+          PersistentKeepalive = 25
+          " > /etc/wireguard/pia.conf || exit 1
+          ${wg-quick} up pia || exit 1
+          payload_and_signature=$(curl -s -G -m 5 \
+            --connect-to "$PIA_HOST::$PIA_SERVER:" \
+            --cacert "ca.rsa.4096.crt" \
+            --data-urlencode "token=$token" \
+            "https://$PIA_HOST:19999/getSignature" )
+          if [[ $(echo $payload_and_signature | jq -r '.status') != "OK" ]]; then
+            echo "Failed to get signature: $(echo $payload_and_signature | jq -r '.message')"
+            exit 1
+          fi
+          signature=$(echo $payload_and_signature | jq -r '.signature')
+          payload=$(echo $payload_and_signature | jq -r '.payload')
+          port=$(echo $payload | base64 -d | jq -r '.port')
+          echo "$port" > /root/pia-port
+          while true; do
+            bind_port_response=$(curl -s -G -m 5 \
+              --connect-to "$PIA_HOST::$PIA_SERVER:" \
+              --cacert "ca.rsa.4096.crt" \
+              --data-urlencode "payload=$payload" \
+              --data-urlencode "signature=$signature" \
+              "https://$PIA_HOST:19999/bindPort" )
+            if [[ $(echo $bind_port_response | jq -r '.status') != "OK" ]]; then
+              echo "Failed to bind port: $(echo $bind_port_response | jq -r '.message')"
+              exit 1
+            fi
+            sleep 900
+          done
+        '';
+        EnvironmentFile = "${config.sops.secrets.pia_env.path}";
+        WorkingDirectory = "/root/manual-connections";
+        Restart = "always";
+        ExecStopPost = "${wg-quick} down pia";
+        NetworkNamespacePath = "/run/netns/vpn";
+        Conflicts = [ "ivacy-vpn.service" ];
+      };
   };
 }

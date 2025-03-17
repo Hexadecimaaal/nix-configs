@@ -62,8 +62,8 @@ in
   };
 
   systemd.services.qbittorrent = {
-    requires = [ "ivacy-vpn.service" "netns-vpn.service" ];
-    after = [ "ivacy-vpn.service" "netns-vpn.service" ];
+    requires = [ "pia-vpn.service" "netns-vpn.service" ];
+    after = [ "pia-vpn.service" "netns-vpn.service" ];
     serviceConfig = {
       MemoryAccounting = true;
       MemoryHigh = "8G";
@@ -71,8 +71,22 @@ in
     };
   };
 
+  systemd.services.qbittorrent-update = {
+    requires = [ "qbittorrent.service" ];
+    after = [ "qbittorrent.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      ExecStart = pkgs.writeShellScript "update-qbittorrent.sh" ''
+        sleep 10
+        ${pkgs.curl}/bin/curl -i -X POST -d "json={\"listen_port\": $(cat /root/pia-port)}" http://127.0.0.1:20001/api/v2/app/setPreferences
+      '';
+      Type = "oneshot";
+      NetworkNamespacePath = "/run/netns/vpn";
+    };
+  };
+
   systemd.services.mc-mkX = {
-    wantedBy = ["multi-user.target"];
+    wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       ExecStart = "${pkgs.jdk8}/bin/java -Xmx8192M -jar forge-1.12.2-14.23.5.2860-universal.jar nogui";
       WorkingDirectory = "/Plain/Games/mcservers/mkX";
@@ -82,7 +96,7 @@ in
   };
 
   systemd.services.mc-mkXV = {
-    wantedBy = ["multi-user.target"];
+    wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       ExecStart = "${pkgs.jdk17}/bin/java @user_jvm_args.txt @libraries/net/minecraftforge/forge/1.20.1-47.2.20/unix_args.txt nogui";
       WorkingDirectory = "/Plain/Games/mcservers/mkXV";
