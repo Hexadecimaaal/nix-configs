@@ -58,13 +58,13 @@
 
   networking.hostName = "palladium";
   networking.networkmanager.enable = true;
-  # networking.networkmanager.dns = "systemd-resolved";
+  networking.networkmanager.dns = "systemd-resolved";
   networking.useDHCP = false;
-  # networking.resolvconf.enable = false;
-  # services.resolved.enable = true;
+  networking.resolvconf.enable = false;
+  services.resolved.enable = true;
   networking.firewall.enable = true;
-  networking.firewall.allowedTCPPorts = [ 64331 ];
-  networking.firewall.allowedUDPPorts = [ 64331 ];
+  # networking.firewall.allowedTCPPorts = [ 64331 ];
+  # networking.firewall.allowedUDPPorts = [ 64331 ];
   networking.firewall.trustedInterfaces = [ "virbr0" ];
   networking.firewall.logRefusedConnections = false;
 

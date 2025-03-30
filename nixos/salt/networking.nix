@@ -9,8 +9,8 @@
   networking.useDHCP = false;
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 64331 ];
-  networking.firewall.allowedUDPPorts = [ 64331 ];
+  # networking.firewall.allowedTCPPorts = [ 64331 ];
+  networking.firewall.allowedUDPPorts = [ 5353 ];
   # Or disable the firewall altogether.
   networking.firewall.enable = true;
   networking.nftables.enable = true;
@@ -64,9 +64,17 @@
             DHCPPrefixDelegation = true;
             IPv6AcceptRA = true;
             DNSSECNegativeTrustAnchors = [ "lan.hexade.ca" ];
+            DNSSEC = "yes";
+            MulticastDNS = "yes";
           };
         };
       };
+  };
+
+  networking.resolvconf.enable = false;
+  services.resolved = {
+    enable = true;
+    fallbackDns = [ ];
   };
 
   systemd.services."netns-vpn" =
