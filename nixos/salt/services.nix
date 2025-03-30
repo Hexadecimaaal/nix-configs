@@ -78,10 +78,8 @@ in
     after = [ "qbittorrent.service" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
-      ExecStart = pkgs.writeShellScript "update-qbittorrent.sh" ''
-        sleep 10
-        ${pkgs.curl}/bin/curl -i -X POST -d "json={\"listen_port\": $(cat /root/pia-port)}" http://127.0.0.1:20001/api/v2/app/setPreferences
-      '';
+      ExecStart =
+        ''${pkgs.curl}/bin/curl --retry-connrefused --retry 7 -i -X POST -d "json={\"listen_port\": $(cat /root/pia-port)}" http://127.0.0.1:20001/api/v2/app/setPreferences'';
       Type = "oneshot";
       NetworkNamespacePath = "/run/netns/vpn";
     };
