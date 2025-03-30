@@ -95,41 +95,28 @@
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        ExecStart = pkgs.writeShellScript "start-${netns}-netns.sh" ''
-          ${ip} netns add ${netns}
-          ${ip} -n ${netns} link set lo up
-          ${ip} link add ${veth} type veth peer name ${vpeer}
-          ${ip} link set ${vpeer} netns ${netns}
-          ${ip} link set ${veth} up
-          ${ip} -n ${netns} link set ${vpeer} up
-          ${ip} addr add ${vethip-cidr} dev ${veth}
-          ${ip} -n ${netns} addr add ${vpeerip} dev ${vpeer}
-          ${ip} -n ${netns} route add default via ${vethip}
-        '';
-        ExecStop = pkgs.writeShellScript "stop-${netns}-netns.sh" ''
-          ${ip} netns del ${netns}
-        '';
+        ExecStartPre = [
+          "-${ip} netns del ${netns}"
+          "-${ip} link del ${veth}"
+          "-${ip} link del ${vpeer}"
+        ];
+        ExecStart = [
+          "${ip} netns add ${netns}"
+          "${ip} -n ${netns} link set lo up"
+          "${ip} link add ${veth} type veth peer name ${vpeer}"
+          "-${ip} link set ${vpeer} netns ${netns}"
+          "${ip} link set ${veth} up"
+          "${ip} -n ${netns} link set ${vpeer} up"
+          "${ip} addr add ${vethip-cidr} dev ${veth}"
+          "${ip} -n ${netns} addr add ${vpeerip} dev ${vpeer}"
+          "${ip} -n ${netns} route add default via ${vethip} dev ${vpeer} onlink"
+        ];
+        ExecStopPost = [
+          "-${ip} link del ${veth}"
+          "-${ip} netns del ${netns}"
+        ];
       };
     };
-
-  systemd.services."ivacy-vpn" = {
-
-    # wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" "netns-vpn.service" ];
-    bindsTo = [ "netns-vpn.service" ];
-    partOf = [ "netns-vpn.service" ];
-
-    path = [ pkgs.iptables pkgs.iproute2 pkgs.nettools ];
-    serviceConfig = {
-      ExecStart = "@${pkgs.openvpn}/sbin/openvpn openvpn --suppress-timestamps --config /root/OpenVPN-Configs/Turkey-UDP.ovpn";
-      WorkingDirectory = "/root/OpenVPN-Configs";
-      Restart = "always";
-      ExecStopPost = "@${pkgs.iproute2}/bin/ip ip route add default via 10.0.1.0";
-      Type = "notify";
-      NetworkNamespacePath = "/run/netns/vpn";
-      Conflicts = [ "pia-vpn.service" ];
-    };
-  };
 
   sops.secrets.pia_env = { };
   systemd.services."pia-vpn" = {
@@ -170,6 +157,7 @@
           [Interface]
           PrivateKey = $privkey
           Address = $(echo $wireguard_json | jq -r '.peer_ip')
+          DNS = $(echo $wireguard_json | jq -r '.dns_servers[0]')
           [Peer]
           PublicKey = $(echo $wireguard_json | jq -r '.server_key')
           Endpoint = $PIA_SERVER:$(echo $wireguard_json | jq -r '.server_port')
@@ -209,7 +197,6 @@
         Restart = "always";
         ExecStopPost = "${wg-quick} down pia";
         NetworkNamespacePath = "/run/netns/vpn";
-        Conflicts = [ "ivacy-vpn.service" ];
       };
   };
 }

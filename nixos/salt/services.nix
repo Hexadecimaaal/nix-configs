@@ -62,7 +62,9 @@ in
   };
 
   systemd.services.qbittorrent = {
-    requires = [ "pia-vpn.service" "netns-vpn.service" ];
+    requires = [ "pia-vpn.service" ];
+    bindsTo = [ "netns-vpn.service" ];
+    partOf = [ "netns-vpn.service" ];
     after = [ "pia-vpn.service" "netns-vpn.service" ];
     serviceConfig = {
       MemoryAccounting = true;
