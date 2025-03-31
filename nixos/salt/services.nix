@@ -74,9 +74,11 @@ in
   };
 
   systemd.services.qbittorrent-update = {
-    requires = [ "qbittorrent.service" ];
-    after = [ "qbittorrent.service" ];
     wantedBy = [ "multi-user.target" ];
+    requires = [ "qbittorrent.service" ];
+    partOf = [ "pia-vpn.service" ];
+    bindsTo = [ "pia-vpn.service" ];
+    after = [ "qbittorrent.service" "pia-vpn.service" ];
     serviceConfig = {
       ExecStart =
         ''${pkgs.curl}/bin/curl --retry-connrefused --retry 7 -i -X POST -d "json={\"listen_port\": $(cat /root/pia-port)}" http://127.0.0.1:20001/api/v2/app/setPreferences'';

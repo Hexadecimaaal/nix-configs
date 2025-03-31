@@ -158,7 +158,8 @@
           [Interface]
           PrivateKey = $privkey
           Address = $(echo $wireguard_json | jq -r '.peer_ip')
-          DNS = $(echo $wireguard_json | jq -r '.dns_servers[0]')
+          PostUp = resolvectl dns pia $(echo $wireguard_json | jq -r '.dns_servers[0]')
+          PostDown = resolvectl revert pia
           [Peer]
           PublicKey = $(echo $wireguard_json | jq -r '.server_key')
           Endpoint = $PIA_SERVER:$(echo $wireguard_json | jq -r '.server_port')
