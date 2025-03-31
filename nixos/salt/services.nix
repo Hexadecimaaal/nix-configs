@@ -31,8 +31,8 @@ in
     group = "users";
     openFilesLimit = 1048576;
   };
-  networking.firewall.allowedTCPPorts = [ 80 443 25510 25515 ];
-  networking.firewall.allowedUDPPorts = [ 80 443 25510 25515 ];
+  networking.firewall.allowedTCPPorts = [ 80 443 25510 25515 25516 ];
+  networking.firewall.allowedUDPPorts = [ 80 443 25510 25515 25516 ];
 
   security.acme.acceptTerms = true;
   security.acme.defaults.email = "hexadecimaaal@gmail.com";
@@ -100,6 +100,16 @@ in
     serviceConfig = {
       ExecStart = "${pkgs.jdk17}/bin/java @user_jvm_args.txt @libraries/net/minecraftforge/forge/1.20.1-47.2.20/unix_args.txt nogui";
       WorkingDirectory = "/Plain/Games/mcservers/mkXV";
+      User = "hex";
+      Group = "hex";
+    };
+  };
+
+  systemd.services.mc-mkXVI = {
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.jdk8}/bin/java -jar minecraft_server.1.7.10.jar -o false nogui";
+      WorkingDirectory = "/Plain/Games/mcservers/mkXVI";
       User = "hex";
       Group = "hex";
     };

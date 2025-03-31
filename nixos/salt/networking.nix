@@ -122,7 +122,8 @@
   systemd.services."pia-vpn" = {
 
     wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" "netns-vpn.service" ];
+    after = [ "network-online.target" "netns-vpn.service" ];
+    requires = [ "network-online.target" ];
     bindsTo = [ "netns-vpn.service" ];
     partOf = [ "netns-vpn.service" ];
 
