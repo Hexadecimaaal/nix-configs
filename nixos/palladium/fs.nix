@@ -10,7 +10,7 @@
   boot.zfs.devNodes = "/dev/disk/by-id";
   boot.zfs.requestEncryptionCredentials = [ "palladium/palladium" ];
 
-  boot.tmp.useTmpfs = true;
+  # boot.tmp.useTmpfs = true;
 
   # services.zfs.autoSnapshot.enable = true;
   environment.systemPackages = with pkgs; [

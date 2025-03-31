@@ -4,7 +4,7 @@
 
   boot.initrd.availableKernelModules = [ "nvme" ];
   boot.supportedFilesystems = [ "zfs" "ntfs" "f2fs" ];
-  boot.tmp.useTmpfs = true;
+  # boot.tmp.useTmpfs = true;
 
   boot.zfs.devNodes = "/dev/disk/by-id";
   networking.hostId = "249ab6f0";

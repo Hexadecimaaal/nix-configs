@@ -15,6 +15,6 @@
 
   home.packages = with pkgs; [
     nil
-    coqPackages.vscoq-language-server
+    # coqPackages.vscoq-language-server
   ];
 }
