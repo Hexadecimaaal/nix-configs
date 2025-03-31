@@ -2,7 +2,7 @@
   programs.vscode = {
     enable = true;
     # package = pkgs.vscodium;
-    extensions = with pkgs.vscode-extensions; [
+    profiles.default.extensions = with pkgs.vscode-extensions; [
       vadimcn.vscode-lldb
       ms-vscode-remote.remote-ssh
       ms-vsliveshare.vsliveshare
