@@ -137,7 +137,7 @@
 
   networking.hostName = "mercury";
 
-  services.colord.enable = true;
+  # services.colord.enable = true;
 
   services.power-profiles-daemon.enable = lib.mkForce false;
   # powerManagement.powertop.enable = true;

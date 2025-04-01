@@ -41,10 +41,9 @@
 
     "torrent" = {
       uid = 994;
-      group = "users";
+      group = "torrent";
       home = "/var/lib/qbittorrent";
       createHome = true;
-      isSystemUser = true;
     };
   };
   users.groups = {
@@ -52,5 +51,6 @@
     "omeg".gid = 1001;
     "oxa".gid = 1004;
     "dram".gid = 1005;
+    "torrent".gid = 994;
   };
 }
