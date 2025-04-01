@@ -1,21 +1,3 @@
-{ pkgs, ... }:
-let
-  mkgallery-dl = { urlfile, oncalendar }: {
-    after = [ "network.target" ];
-    description = "gallery-dl a list at ${oncalendar}";
-    path = with pkgs; [ gallery-dl attr ffmpeg ];
-    serviceConfig = {
-      ExecStart = ''
-        ${pkgs.gallery-dl}/bin/gallery-dl --abort 20 -i "${urlfile}"
-      '';
-      User = "hex";
-      Group = "users";
-      UMask = "0002";
-      LimitNOFILE = 4096;
-    };
-    startAt = oncalendar;
-  };
-in
 {
   services.pykms = {
     enable = true;
@@ -23,17 +5,7 @@ in
   };
 
   networking.firewall.allowedTCPPorts = [ 80 443 25510 25515 25516 ];
-  networking.firewall.allowedUDPPorts = [ 80 443 25510 25515 25516 ];
-
-  systemd.services."gallery-dl-hourly" = mkgallery-dl {
-    urlfile = "/Plain/Videos/windows 更新补丁/!!rip!!/00_download_urls.txt";
-    oncalendar = "*:45";
-  };
-
-  systemd.services."gallery-dl-daily" = mkgallery-dl {
-    urlfile = "/Plain/Videos/windows 更新补丁/!!rip!!/__qd_download_urls.txt";
-    oncalendar = "3:45";
-  };
+  networking.firewall.allowedUDPPorts = [ 80 443 ];
 
   security.acme.acceptTerms = true;
   security.acme.defaults.email = "hexadecimaaal@gmail.com";
@@ -83,7 +55,6 @@ in
       };
 
       systemd.services.qbittorrent = {
-        wantedBy = lib.mkForce [ "services.target" ];
         requires = [ "pia-vpn.service" ];
         after = [ "pia-vpn.service" ];
       };
@@ -93,15 +64,29 @@ in
         partOf = [ "qbittorrent.service" ];
         bindsTo = [ "qbittorrent.service" ];
         after = [ "qbittorrent.service" ];
+        path = with pkgs; [ jq curl ];
         serviceConfig = {
           ExecStart = pkgs.writeShellScript "qbittorrent-update"
             ''
-              ${pkgs.curl}/bin/curl \
-                --retry-connrefused \
-                --retry 10 \
-                -i -X POST \
-                -d "json={\"listen_port\": $(cat /root/pia-port)}" \
-                http://127.0.0.1:20001/api/v2/app/setPreferences
+              port=""
+              targetPort=$(cat /root/pia-port)
+              while [[ x$port != x$targetPort ]]; do
+                echo "setting port to $targetPort"
+                curl \
+                  --retry-connrefused \
+                  --retry 10 \
+                  -i -X POST \
+                  -d "json={\"listen_port\": $targetPort}" \
+                  http://127.0.0.1:20001/api/v2/app/setPreferences
+                echo "done POST"
+                prefs=$(curl \
+                  --retry-connrefused \
+                  --retry 10 \
+                  http://127.0.0.1:20001/api/v2/app/preferences)
+                port=$(echo $prefs | jq -r '.listen_port')
+                echo "port now: $port"
+              done
+              echo "port successfully set to target, exiting"
             '';
           Type = "oneshot";
           # NetworkNamespacePath = "/run/netns/vpn";
@@ -109,7 +94,6 @@ in
       };
     };
   };
-
 
   containers.mcservers = {
     autoStart = true;
@@ -166,6 +150,45 @@ in
           ExecStart = "${pkgs.jdk8}/bin/java -jar minecraft_server.1.7.10.jar -o false nogui";
           WorkingDirectory = "/mcservers/mkXVI";
         };
+      };
+    };
+  };
+
+  containers.gallery-dl = {
+    autoStart = true;
+    privateUsers = "pick";
+    privateNetwork = true;
+    hostAddress = "10.16.0.6";
+    localAddress = "10.16.0.7";
+    bindMounts."/Plain/Videos:owneridmap" = {
+      hostPath = "/Plain/Videos";
+      isReadOnly = false;
+    };
+    config = { pkgs, lib, ... }: {
+      system.stateVersion = "25.05";
+
+      networking = {
+        # Use systemd-resolved inside the container
+        # Workaround for bug https://github.com/NixOS/nixpkgs/issues/162686
+        useHostResolvConf = lib.mkForce false;
+        resolvconf.enable = false;
+        firewall.enable = false;
+      };
+      services.resolved.enable = true;
+
+      systemd.services."gallery-dl" = {
+        after = [ "network.target" ];
+        wants = [ "network.target" ];
+        description = "gallery-dl a list";
+        path = with pkgs; [ gallery-dl attr ffmpeg ];
+        serviceConfig = {
+          ExecStart = ''
+            gallery-dl --abort 20 -c "/Plain/Videos/.gallery-dl.config.json" -i "/Plain/Videos/.urls.txt"
+          '';
+          UMask = "0002";
+          LimitNOFILE = 4096;
+        };
+        startAt = "3:45";
       };
     };
   };

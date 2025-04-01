@@ -144,26 +144,26 @@
         };
       };
 
-      systemd.targets."services" = {
-        after = [ "multi-user.target" "network-online.target" ];
-        wants = [ "network-online.target" ];
-      };
+      # systemd.targets."services" = {
+      #   after = [ "multi-user.target" "network-online.target" ];
+      #   wants = [ "network-online.target" ];
+      # };
 
-      systemd.services."start-services" = {
-        wantedBy = [ "multi-user.target" ];
-        serviceConfig = {
-          ExecStart = "systemctl --no-block start services.target";
-          Type = "oneshot";
-        };
-      };
+      # systemd.services."start-services" = {
+      #   wantedBy = [ "multi-user.target" ];
+      #   serviceConfig = {
+      #     ExecStart = "systemctl --no-block start services.target";
+      #     Type = "oneshot";
+      #   };
+      # };
 
       systemd.services."pia-vpn" = {
 
-        wantedBy = [ "services.target" ];
+        wantedBy = [ "multi-user.target" ];
         after = [ "network-online.target" ];
         requires = [ "network-online.target" ];
 
-        path = with pkgs; [ jq wireguard-tools curl iproute2 ];
+        path = with pkgs; [ jq wireguard-tools curl iproute2 config.systemd.package ];
         serviceConfig =
           let
             wg-quick = "${pkgs.wireguard-tools}/bin/wg-quick";
@@ -203,6 +203,7 @@
               PersistentKeepalive = 25
               " > /etc/wireguard/pia.conf || exit 1
               ${wg-quick} up pia || exit 1
+              systemd-notify --status="interface brought up..."
               payload_and_signature=$(curl -s -G -m 5 \
                 --connect-to "$PIA_HOST::$PIA_SERVER:" \
                 --cacert "/root/ca.rsa.4096.crt" \
@@ -216,6 +217,7 @@
               payload=$(echo $payload_and_signature | jq -r '.payload')
               port=$(echo $payload | base64 -d | jq -r '.port')
               echo "$port" > /root/pia-port
+              systemd-notify --ready --status="port forward set up."
               while true; do
                 bind_port_response=$(curl -s -G -m 5 \
                   --connect-to "$PIA_HOST::$PIA_SERVER:" \
@@ -232,8 +234,8 @@
             '';
             EnvironmentFile = "/root/pia_env";
             Restart = "always";
+            Type = "notify";
             ExecStopPost = "${wg-quick} down pia";
-            # NetworkNamespacePath = "/run/netns/vpn";
           };
       };
     };
