@@ -1,4 +1,4 @@
-{ lib, pkgs, config, ... }: {
+{ lib, config, inputs, ... }: {
   imports = [
     # ../profiles/cgproxy.nix
     # ../profiles/v2ray.nix
@@ -102,24 +102,24 @@
     fallbackDns = [ ];
   };
 
-  sops.secrets.pia_env = {
-    mode = "0444";
-  };
-
   containers.vpn = {
     autoStart = true;
     privateUsers = "pick";
     privateNetwork = true;
     interfaces = [ "vpeer0" ];
     enableTun = true;
-    bindMounts = {
-      "/root/pia_env" = {
-        hostPath = "${config.sops.secrets.pia_env.path}";
-        isReadOnly = true;
-      };
-    };
-    config = { config, pkgs, ... }: {
+    config = { config, pkgs, lib, ... }: {
+      imports = [ inputs.sops-nix.nixosModules.sops ];
+      sops.defaultSopsFile = ./secrets-vpn.yaml;
+      sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+      sops.secrets.pia_env = { };
       system.stateVersion = "25.05";
+
+      services.openssh = {
+        enable = true;
+        openFirewall = false;
+        listenAddresses = [{ addr = "127.0.0.1"; port = 22; }];
+      };
 
       networking = {
         # Use systemd-resolved inside the container
@@ -232,7 +232,7 @@
                 sleep 900
               done
             '';
-            EnvironmentFile = "/root/pia_env";
+            EnvironmentFile = "${config.sops.secrets.pia_env.path}";
             Restart = "always";
             Type = "notify";
             ExecStopPost = "${wg-quick} down pia";

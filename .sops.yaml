@@ -2,6 +2,7 @@ keys:
   - &hex 4485686BB93BF3ED22E34070AB5F80A3F8A2DE61
 
   - &salt age10uw374gt4pc4v27ftrnw9k9mvxd75hnr8rrdecqhzut9497pz96qfrudxn
+  - &salt_vpn age1jr8r92suc5vn76hv3dd5xdvlflyf3637aggztnwf8rqtnyyk5yus0tul7p
   - &palladium age1yknh353ll8yy2l8v6ptm62u0chak2gzrxs4va0qmz343eznu4alsz5rak5
   - &shinonome age1vuxeyq8339n00dgmputde5qa8r7l36vc90demhnnsdmgfj4yfp3qj68ykr
 
@@ -18,6 +19,12 @@ creation_rules:
           - *hex
         age:
           - *salt
+  - path_regex: nixos/salt/secrets-vpn\.yaml$
+    key_groups:
+      - pgp:
+          - *hex
+        age:
+          - *salt_vpn
   - path_regex: nixos/palladium/secrets\.yaml$
     key_groups:
       - pgp:
